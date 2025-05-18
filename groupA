@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Seleksi Beasiswa</title>
+  <style>
+    :root {
+      --accent: #2ec4b6;
+      --dark: #1d1d1d;
+      --light: #f5f5f5;
+      --white: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Helvetica Neue', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      font-size: 2rem;
+    }
+
+    form {
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 20px var(--shadow);
+      border-left: 6px solid var(--accent);
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 1rem;
+      display: block;
+      color: var(--dark);
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+      background-color: #fdfdfd;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 5px var(--accent);
+    }
+
+    input[type="submit"] {
+      background-color: var(--accent);
+      color: var(--white);
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1.5rem;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #27b1a6;
+      transform: scale(1.02);
+    }
+
+    #hasil {
+      background-color: var(--white);
+      margin-top: 2rem;
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 8px 20px var(--shadow);
+      font-size: 1rem;
+      color: var(--dark);
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    @media (max-width: 600px) {
+      form, #hasil {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Seleksi Beasiswa Mahasiswa</h1>
+
+<form id="beasiswaForm">
+  <label>Nama:</label>
+  <input type="text" id="nama" required>
+
+  <label>IPK (0.0 - 4.0):</label>
+  <input type="number" id="ipk" step="0.01" min="0" max="4" required>
+
+  <label>Pendapatan Orang Tua (Rp):</label>
+  <input type="number" id="pendapatan" required>
+
+  <label>Jumlah Prestasi (0 - 5):</label>
+  <input type="number" id="prestasi" min="0" max="5" required>
+
+  <input type="submit" value="Cek Kelayakan">
+</form>
+
+<div id="hasil"></div>
+
+<script>
+document.getElementById('beasiswaForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const nama = document.getElementById('nama').value;
+  const ipk = parseFloat(document.getElementById('ipk').value);
+  const pendapatan = parseInt(document.getElementById('pendapatan').value);
+  const prestasi = parseInt(document.getElementById('prestasi').value);
+
+  if (isNaN(ipk) || ipk < 0 || ipk > 4) {
+    alert("IPK tidak valid (0.0 - 4.0)");
+    return;
+  }
+  if (isNaN(prestasi) || prestasi < 0 || prestasi > 5) {
+    alert("Jumlah prestasi tidak valid (0 - 5)");
+    return;
+  }
+
+  const skor_ipk = ipk / 4 * 50;
+  const skor_pendapatan = pendapatan <= 3000000 ? 30 : (pendapatan <= 7000000 ? 20 : 10);
+  const skor_prestasi = prestasi / 5 * 20;
+  const total_skor = skor_ipk + skor_pendapatan + skor_prestasi;
+  const status = total_skor >= 70 ? "Layak" : "Tidak Layak";
+
+  document.getElementById('hasil').innerText =
+    📋 Hasil Seleksi Beasiswa\n\n +
+    Nama Mahasiswa      : ${nama}\n +
+    IPK                 : ${ipk.toFixed(2)}\n +
+    Pendapatan Orang Tua: Rp ${pendapatan.toLocaleString('id-ID')}\n +
+    Jumlah Prestasi     : ${prestasi}\n +
+    Skor Akhir          : ${total_skor.toFixed(2)}\n +
+    Status Kelayakan    : ${status};
+});
+</script>
+
+</body>
+</html>
